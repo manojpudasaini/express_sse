@@ -48,13 +48,16 @@
       };
       console.log(data);
       try {
-        const response = await fetch("http://localhost:3000/api/send-event", {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+        const response = await fetch(
+          "https://express-sse-drab.vercel.app/api/send-event",
+          {
+            method: "post",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
         document.getElementById("event_form")?.reset();
         console.log(response);
       } catch (error) {

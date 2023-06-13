@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 
 const __dirname = process.cwd();
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log("server is up and running in port 3000");
