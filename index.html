@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Source</title>
+  </head>
+  <body>
+    <div id="form">
+      <h1>Form:</h1>
+      <form id="event_form">
+        <input name="name" id="name" />
+        <input name="value" id="value" />
+        <button type="submit" id="submit">Submit</button>
+      </form>
+    </div>
+    <div id="events">
+      <h1>Events:</h1>
+      <ol id="list"></ol>
+    </div>
+  </body>
+  <script>
+    let name = "";
+    let value = "";
+    const events = new EventSource("http://localhost:3000/api/trigger");
+    events.onmessage = (event) => {
+      const singleEventId = document.createElement("li");
+      singleEventId.innerText = event.data;
+      const list = document.getElementById("list");
+      list.appendChild(singleEventId);
+    };
+
+    window.addEventListener("change", inputChangeHandler);
+    const submit_btn = document.getElementById("submit");
+    submit_btn.addEventListener("click", submitHandler);
+    function inputChangeHandler(e) {
+      e.preventDefault();
+      if (e.target.name === "name") name = e.target.value;
+      if (e.target.name === "value") value = e.target.value;
+    }
+
+    async function submitHandler(e) {
+      e.preventDefault();
+      if (e.target.id !== "submit") return;
+      const data = {
+        name: name,
+        value: value,
+      };
+      console.log(data);
+      try {
+        const response = await fetch("http://localhost:3000/api/send-event", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        document.getElementById("event_form")?.reset();
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  </script>
+</html>
